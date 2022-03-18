@@ -95,14 +95,11 @@ module DBF
     end
 
     def encoding_args # :nodoc:
-      @encoding_args ||= [
-        Encoding.default_external,
-        {undef: :replace, invalid: :replace}
-      ]
+      @encoding_args ||= { undef: :replace, invalid: :replace }
     end
 
     def encode_string(string) # :nodoc:
-      string.force_encoding(@encoding).encode(*encoding_args)
+      string.force_encoding(@encoding).encode(Encoding.default_external, **encoding_args)
     end
 
     def type_cast_class # :nodoc:

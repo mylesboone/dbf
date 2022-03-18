@@ -1,10 +1,7 @@
 module DBF
   module ColumnType
     class Base
-      ENCODING_ARGS = [
-        Encoding.default_external,
-        {undef: :replace, invalid: :replace}
-      ].freeze
+      ENCODING_ARGS = { undef: :replace, invalid: :replace }.freeze
 
       attr_reader :decimal, :encoding
 
@@ -78,7 +75,7 @@ module DBF
     class Memo < Base
       def type_cast(value)
         if encoding && !value.nil?
-          value.force_encoding(@encoding).encode(*ENCODING_ARGS)
+          value.force_encoding(@encoding).encode(Encoding.default_external, **ENCODING_ARGS)
         else
           value
         end
@@ -94,9 +91,8 @@ module DBF
     class String < Base
       def type_cast(value)
         value = value.strip
-        @encoding ? value.force_encoding(@encoding).encode(*ENCODING_ARGS) : value
+        @encoding ? value.force_encoding(@encoding).encode(Encoding.default_external, **ENCODING_ARGS) : value
       end
     end
-
   end
 end
